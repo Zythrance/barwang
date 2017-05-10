@@ -49,7 +49,7 @@ if (mysqli_num_rows($check_res)<1) {
 		$_SESSION["nom_in"]=$_POST["nom_in"];
 		
 		if (!empty($_SESSION["nom_in"])) {
-				header("location:perfil.php");
+				header("location:perfil.php"); /* <--- Aqui TAMBIÉN se tiene que incluir el perfil del cliente. */
 			}
 	}
 }
