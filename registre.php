@@ -1,5 +1,7 @@
 <?php
 
+/* Desde aquí se registran los usuarios. */
+
 	function connect(){
 	global $mysqli;
 	$mysqli = mysqli_connect("localhost", "root", "", "barwang");
