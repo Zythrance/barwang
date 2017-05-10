@@ -68,6 +68,6 @@
 			echo "Aquest usuari ya esta registrat!";
 		}
 
-		}
+	}
 
 ?>
