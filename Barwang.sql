@@ -5,8 +5,8 @@ create database barwang;
 use barwang;
 
 CREATE TABLE socio(Cod_soci int(11) NOT NULL  PRIMARY KEY, Nom VARCHAR(30),apellidos varchar(40), ciudad varchar(40),cuenta (), telefono int, correo());
-CREATE TABLE cliente(Codigo int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, Nom VARCHAR(30),apellidos varchar(40),password (), ciudad varchar(40), forma_pago varchar(20),correo (), socio boolean);
-CREATE TABLE compra(IDcompra int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, fecha date, cliente int(11), articulo int(11), talla (),cantidad int(4),precio_total double(5,2));
+CREATE TABLE cliente(Codigo int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, Nom VARCHAR(30),apellidos varchar(40),password (), ciudad varchar(40), correo (), socio boolean);
+CREATE TABLE compra(IDcompra int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, fecha date, cliente int(11), articulo int(11), talla (),cantidad int(4),forma_pago varchar(20),precio_total double(5,2));
 CREATE TABLE articulo(IDART int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY, Nom varchar(20), descripcion VARCHAR(45),  precio double(5,2), stock_s int(4), stock_m int(4), stock_l int(4),);
 
 
@@ -20,7 +20,7 @@ ALTER TABLE compra ADD FOREIGN KEY (IDcompra) REFERENCES compra(IDcompra) ON DEL
 
 
 insert into articulo values ('camiseta','',30.00, 20,20,20), ('pantalon','', 40.00, 20,20,20),('botas','',60.00, 10,10,10),
-( 'pelota','',50.00, 20,20,20), ('guantes','',25.00, 20,20,20),('chandal', '',100.00, 20,20,20),('socio','', 100.00, 20,20,20);
+( 'pelota','',50.00, 20,20,20), ('guantes','',25.00, 20,20,20),('chandal', '',100.00, 20,20,20),('chandal', '',100.00, 20,20,20),('socio','', 100.00, 20,20,20);
 
 
 delimiter //
@@ -29,7 +29,7 @@ CREATE TRIGGER azte_socio AFTER INSERT ON cliente
 FOR EACH ROW
 BEGIN
 IF not exists (select Cod_soci from socio where Cod_soci=(select codigo from cliente where codigo=NEW.codigo)
-if (socio=1)
+if (NEW.socio=1)
 call hazte_socio();
 else
 then
@@ -44,8 +44,9 @@ delimiter ;
 delimiter //
 CREATE  PROCEDURE hazte_socio (in xcuenta int(11), in xtelefono int(),out codigo int(11))
 BEGIN 
-select * from cliente where codigo=Cod_soci  then
+select * from cliente where codigo=NEW.codigo  then
 INSERT INTO socio (Nom,apellidos,ciudad,cuenta,telefono,correo) select Nom,apellidos,ciudad,correo from cliente;
+INSERT INTO socio (Nom,apellidos,ciudad,cuenta,telefono,correo) values (NEW.Nom,NEW.apellidos,NEW.ciudad,NEW.cuenta,NEW.telefono,NEW.correo);
 END
 //
 delimiter ;
@@ -57,18 +58,26 @@ CREATE TRIGGER descuento BEFORE INSERT ON compra
 FOR EACH ROW
 BEGIN
 $soci= SELECT socio from cliente where Codigo=(select NEW.cliente from compra);
-if (socio=1)
-call hazte_socio();
+if (soci=1)
+update compra set precio_total=(precio_total*0.9) where IDcompra=New.IDcompra;
 else
 then
-signal sqlstate‘12345’ set message_text= ‘puedes hacerte socio’;
-end if;
+signal sqlstate‘12345’ set message_text= ‘no hay descuento’;
 end if;
 END
 //
 delimiter ;
 
-
+delimiter //
+CREATE  PROCEDURE socio (in xNom varchar (30), in xapellidos varchar(40), in xciudad varchar(40), in xcuenta int(11), in xtelefono int(),in xcorreo int(11), in xpassword ())
+BEGIN 
+DECLARE soci boolean
+set soci=1
+INSERT INTO socio (Nom,apellidos,ciudad,cuenta,telefono,correo) values (NEW.Nom,NEW.apellidos,NEW.ciudad,NEW.cuenta,NEW.telefono,NEW.correo);
+INSERT INTO cliente(Nom,apellidos,password,ciudad,correo,socio)  values (NEW.Nom,NEW.apellidos,xpassword,NEW.ciudad,NEW.cuenta,xcorreo,NEW.correo,soci);         select Nom,apellidos,ciudad,correo from cliente;
+END
+//
+delimiter ;
 
 
 

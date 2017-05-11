@@ -1,14 +1,14 @@
 <?php		
 //conexxion
 session_start();
-		  if (! empty($_SESSION["nomS"])) {
-			  $sesion=$_SESSION['nomS'];
+		  if (! empty($_SESSION["nom_in"])) {
+			  $sesion=$_SESSION['nom_in'];
     echo "<a href='logout.php' title='Cerrar sesión'>Log out?</a> Bienvenido Sir/Sra " . $sesion;
   }
 
 	function connect(){
 	global $mysqli;
-	$mysqli = mysqli_connect("localhost", "root", "", "fabrikea");
+	$mysqli = mysqli_connect("localhost", "root", "", "Barwang");
 	
 	if (mysqli_connect_errno()) {
 		printf("Connect failed: %s\n", mysqli_connect_error());
@@ -29,9 +29,23 @@ session_start();
             
 				 <h4>Mueble Grande XXL</h4>
 				  <form method="post" >
-				 <img class="muebleGrande" src="muebleGrande.jpg" alt="muebleGrande"><br>
-				 Talla:<input  type='number' name='numero1' value='numero' required><input  type='submit' name='comprar1' value='comprar'> <br>
+				 <img class="camiseta" src="muebleGrande.jpg" alt="camiseta"><br>
+				 
+				 Talla:<input  type='radio' name='talla1' value='s' checked><input  type='submit' name='comprar1' value='comprar'> <br>
+				       <input  type='radio' name='talla1' value='m'>
+					   <input  type='radio' name='talla1' value='l'>
+					   
+					   <select name="talla1"><option selected> elige talla </option>
+					   <option>s</option>
+					   <option>m</option>
+					   <option>l</option>
+					   </select>
 				 Unidades:<input  type='number' name='numero1' value='numero' required><input  type='submit' name='comprar1' value='comprar'> <br>
+				 <select name="talla1"><option selected> forma de pago </option>
+					   <option>contado</option>
+					   <option>visa</option>
+					   <option>adeudo</option>
+					   </select>
 				 </form>
 				 <?php //boton1
 					connect();
@@ -39,7 +53,8 @@ session_start();
 		if(isset ($_POST["comprar1"])){
 				$sesion=$_SESSION['nom_in'];
 				$unidades=$_POST['numero1'];
-				$talla=$_POST[''];	 
+				$talla=$_POST[''];	
+                $fpago=$_POST[''];				
 	        
 			if($talla='s'){
 			$checkStock = "select stock_s from articulo where IDART=1";
@@ -67,7 +82,7 @@ session_start();
 			$idcliente = intval(mysqli_query($mysqli, $selectID));
 			//echo $idcliente;
 			
-			$selectComprar1 = "insert into compra(fecha,cliente,articulo,talla,cantidad) values ('$hoy','$idcliente','1','$talla','$unidades')";
+			$selectComprar1 = "insert into compra(fecha,cliente,articulo,talla,cantidad,forma_pago) values ('$hoy','$idcliente','1','$talla','$unidades','$fpago')";
 			$selectComprarT = mysqli_query($mysqli, $selectComprar1);
 			//echo $selectComprar1; 
 			
