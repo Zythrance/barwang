@@ -6,3 +6,5 @@ La finalidad de este proyecto consiste en crear una página en la que los usuari
 >Falta el archivo del perfil.php.
 
 >Faltan los archivos .sql.
+
+(Incompleto)
